@@ -8,7 +8,7 @@ const Website = () => {
   const socialMediaLinks = [
     {
       name: 'YouTube',
-      url: 'https://www.youtube.com/@desiatlantic',
+      url: 'https://www.youtube.com/@RanjanBatraTechTalks',
       icon: (
         <svg
           className="w-12 h-12 text-neutral-100 hover:text-[#FF0000] transition-colors"
