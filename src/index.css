@@ -1,3 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+/* Custom styles for prose (Markdown rendering) */
+.prose-invert h2 {
+  color: #e5e7eb;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+}
+
+.prose-invert p {
+  color: #d1d5db;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.75;
+}
+
+.prose-invert ul,
+.prose-invert ol {
+  color: #d1d5db;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 1rem;
+}
+
+.prose-invert li {
+  color: #d1d5db;
+  font-family: 'Inter', sans-serif;
+}
+
+.prose-invert blockquote {
+  border-left: 4px solid #FF5722;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #9ca3af;
+  font-family: 'Inter', sans-serif;
+  margin: 1rem 0;
+}
