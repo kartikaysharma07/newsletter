@@ -12,9 +12,29 @@ const Blogs = () => {
       <nav className="fixed top-0 w-full bg-neutral-900/80 backdrop-blur-md shadow-lg z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex-shrink-0">
-              <Link to="/" className="text-3xl font-serif font-bold text-neutral-100">
-                Newsletter
+            <div className="flex-shrink-0 flex items-center">
+              <Link to="/" className="flex items-center">
+                <svg
+                  className="w-8 h-8 mr-2 text-[#FF5722]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                  />
+                </svg>
+                <motion.span
+                  className="text-3xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] to-[#C0C0C0] tracking-wide"
+                  whileHover={{ scale: 1.05, textShadow: "0 0 8px rgba(255, 215, 0, 0.5)" }}
+                  transition={{ duration: 0.3 }}
+                >
+                  RBTechTalks
+                </motion.span>
               </Link>
             </div>
             <div className="hidden md:flex items-center space-x-10">
@@ -204,9 +224,9 @@ const Blogs = () => {
             <Link
               to="/"
               className="mt-12 inline-block text-neutral-100 bg-gradient-to-r from-[#FF5722] to-[#FFC107] rounded-xl px-8 py-4 hover:bg-[#FF5722]/80 transition-colors mx-auto block w-fit font-sans"
-              aria-label="Back to newsletter subscription"
+              aria-label="Back to homepage subscription"
             >
-              Back to Newsletter
+              Back to Homepage
             </Link>
           </motion.div>
         </div>

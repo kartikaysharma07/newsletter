@@ -97,9 +97,29 @@ const App = () => {
           <nav className="fixed top-0 w-full bg-neutral-900/80 backdrop-blur-md shadow-lg z-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center h-16">
-                <div className="flex-shrink-0">
-                  <Link to="/" className="text-3xl font-serif font-bold text-neutral-100">
-                    Newsletter
+                <div className="flex-shrink-0 flex items-center">
+                  <Link to="/" className="flex items-center">
+                    <svg
+                      className="w-8 h-8 mr-2 text-[#FF5722]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                      />
+                    </svg>
+                    <motion.span
+                      className="text-3xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] to-[#C0C0C0] tracking-wide"
+                      whileHover={{ scale: 1.05, textShadow: "0 0 8px rgba(255, 215, 0, 0.5)" }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      RBTechTalks
+                    </motion.span>
                   </Link>
                 </div>
                 <div className="hidden md:flex items-center space-x-10">
@@ -174,7 +194,7 @@ const App = () => {
             </div>
             {isMenuOpen && (
               <div className="md:hidden bg-neutral-900/80 backdrop-blur-md">
-                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <div className="px-2 pt- exhibiting2 pb-3 space-y-1 sm:px-3">
                   <NavLink
                     to="/"
                     className={({ isActive }) =>
@@ -238,8 +258,8 @@ const App = () => {
               <h1 className="text-5xl md:text-7xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-neutral-100 to-[#FFC107] mb-6">
                 Discover the Future of Tech
               </h1>
-              <p className="text-neutral-300 text-xl md:text-2xl font-sans leading-8 max-w-[800px] mx-auto">
-                Join our newsletter to explore cutting-edge insights, trends, and innovations shaping tomorrow.
+              <p className="text-neutral-100 text-xl md:text-2xl font-sans leading-8 max-w-[800px] mx-auto">
+                Join us to explore cutting-edge insights, trends, and innovations shaping tomorrow.
               </p>
             </motion.div>
             {/* Blog Slider */}
@@ -350,7 +370,7 @@ const App = () => {
             >
               <div className="bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl p-8 shadow-lg">
                 <h1 className="text-4xl md:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-neutral-100 to-[#FFC107] text-center mb-4">
-                  Join Our <span className="text-[#FF5722]">Newsletter</span>
+                  Join Our <span className="text-[#FF5722]">Ranjan Batra Tech Talks</span>
                 </h1>
                 <p className="text-neutral-300 mb-6 text-lg font-sans leading-7 text-center">
                   Subscribe to receive the latest tech insights directly in your inbox.

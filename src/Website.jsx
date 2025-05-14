@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const Website = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -50,7 +51,7 @@ const Website = () => {
     },
     {
       name: 'Gmail',
-      url: 'iamranjanbatra@gmail.com', // Replace with your email address
+      url: 'iamranjanbatra@gmail.com',
       icon: (
         <svg
           className="w-12 h-12 text-neutral-100 hover:text-[#D44638] transition-colors"
@@ -64,7 +65,7 @@ const Website = () => {
     },
     {
       name: 'Twitter',
-      url: 'https://www.threads.com/@iamranjanbatra?xmt=AQF0eYtoJf7RFyvSKJ7lsyJ_N4DVU-9kSN_v4Sbdd1LRLRE', // Replace with your Twitter/X profile URL
+      url: 'https://www.threads.com/@iamranjanbatra?xmt=AQF0eYtoJf7RFyvSKJ7lsyJ_N4DVU-9kSN_v4Sbdd1LRLRE',
       icon: (
         <svg
           className="w-12 h-12 text-neutral-100 hover:text-[#1DA1F2] transition-colors"
@@ -103,21 +104,44 @@ const Website = () => {
   };
 
   return (
-    <div className="min-h-screen text-center w-full bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&auto=format&fit=crop&q=60&ixlib=rb-4.0.3')] bg-cover bg-center bg-no-repeat font-sans relative flex flex-col">
-      <div className="absolute inset-0 bg-black/50 z-0"></div>
-      <nav className="fixed top-0 w-full bg-[#ff4922]/10 backdrop-blur-md z-20">
+    <div className="min-h-screen w-full bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&auto=format&fit=crop&q=60&ixlib=rb-4.0.3')] bg-cover bg-center bg-no-repeat font-sans relative flex flex-col overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/50 z-0"></div>
+      {/* Navbar from Posts.jsx */}
+      <nav className="fixed top-0 w-full bg-neutral-900/80 backdrop-blur-md shadow-lg z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex-shrink-0">
-              <Link to="/" className="text-2xl font-bold text-white">
-                Newsletter
+            <div className="flex-shrink-0 flex items-center">
+              <Link to="/" className="flex items-center">
+                <svg
+                  className="w-8 h-8 mr-2 text-[#FF5722]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                  />
+                </svg>
+                <motion.span
+                  className="text-3xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] to-[#C0C0C0] tracking-wide"
+                  whileHover={{ scale: 1.05, textShadow: "0 0 8px rgba(255, 215, 0, 0.5)" }}
+                  transition={{ duration: 0.3 }}
+                >
+                  RBTechTalks
+                </motion.span>
               </Link>
             </div>
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-10">
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  `text-white hover:text-[#ff4922] transition-colors ${isActive ? 'text-[#ff4922]' : ''}`
+                  `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                    isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
+                  }`
                 }
                 aria-label="Home page"
               >
@@ -126,7 +150,9 @@ const Website = () => {
               <NavLink
                 to="/blogs"
                 className={({ isActive }) =>
-                  `text-white hover:text-[#ff4922] transition-colors ${isActive ? 'text-[#ff4922]' : ''}`
+                  `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                    isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
+                  }`
                 }
                 aria-label="View our blog posts"
               >
@@ -135,16 +161,20 @@ const Website = () => {
               <NavLink
                 to="/posts"
                 className={({ isActive }) =>
-                  `text-white hover:text-[#ff4922] transition-colors ${isActive ? 'text-[#ff4922]' : ''}`
+                  `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                    isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
+                  }`
                 }
-                aria-label="View client posts"
+                aria-label="View posts"
               >
                 Posts
               </NavLink>
               <NavLink
                 to="/website"
                 className={({ isActive }) =>
-                  `text-white hover:text-[#ff4922] transition-colors ${isActive ? 'text-[#ff4922]' : ''}`
+                  `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                    isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
+                  }`
                 }
                 aria-label="Visit our website"
               >
@@ -154,7 +184,7 @@ const Website = () => {
             <div className="md:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-white focus:outline-none"
+                className="text-neutral-100 focus:outline-none"
                 aria-label="Toggle navigation menu"
               >
                 <svg
@@ -176,13 +206,13 @@ const Website = () => {
           </div>
         </div>
         {isMenuOpen && (
-          <div className="md:hidden bg-[#ff4922]/10">
+          <div className="md:hidden bg-neutral-900/80 backdrop-blur-md">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  `block text-white hover:text-[#ff4922] transition-colors px-3 py-2 rounded-md ${
-                    isActive ? 'text-[#ff4922]' : ''
+                  `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                    isActive ? 'text-[#FF5722]' : ''
                   }`
                 }
                 aria-label="Home page"
@@ -193,8 +223,8 @@ const Website = () => {
               <NavLink
                 to="/blogs"
                 className={({ isActive }) =>
-                  `block text-white hover:text-[#ff4922] transition-colors px-3 py-2 rounded-md ${
-                    isActive ? 'text-[#ff4922]' : ''
+                  `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                    isActive ? 'text-[#FF5722]' : ''
                   }`
                 }
                 aria-label="View our blog posts"
@@ -205,11 +235,11 @@ const Website = () => {
               <NavLink
                 to="/posts"
                 className={({ isActive }) =>
-                  `block text-white hover:text-[#ff4922] transition-colors px-3 py-2 rounded-md ${
-                    isActive ? 'text-[#ff4922]' : ''
+                  `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                    isActive ? 'text-[#FF5722]' : ''
                   }`
                 }
-                aria-label="View client posts"
+                aria-label="View posts"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Posts
@@ -217,8 +247,8 @@ const Website = () => {
               <NavLink
                 to="/website"
                 className={({ isActive }) =>
-                  `block text-white hover:text-[#ff4922] transition-colors px-3 py-2 rounded-md ${
-                    isActive ? 'text-[#ff4922]' : ''
+                  `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                    isActive ? 'text-[#FF5722]' : ''
                   }`
                 }
                 aria-label="Visit our website"
@@ -230,61 +260,115 @@ const Website = () => {
           </div>
         )}
       </nav>
-      <div className="flex-1 pt-20 pb-8 z-10">
-        <div className="max-w-[900px] mx-auto p-4">
-          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-neutral-200 to-neutral-600 text-center mb-8">
-            Visit Our Website
-          </h1>
-          <p className="text-neutral-500 mb-6 text-lg text-center">
-            Stay tuned! Our website is under construction.
-          </p>
-          {/* Social Media Links */}
+      <div className="flex-1 pt-20 pb-12 z-10">
+        <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header with Logo */}
+          <div className="flex items-center justify-center mb-10">
+            <img
+              src="/assets/logo2.png" // Replace with your image file path (e.g., /assets/logo2.png)
+              alt="RBTechTalks Logo"
+              className="w-16 h-16 mr-3"
+              onError={(e) => {
+                console.log('Failed to load logo');
+                e.target.src = 'https://via.placeholder.com/64'; // Fallback image
+              }}
+            />
+            <motion.h1
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="text-4xl sm:text-5xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-neutral-100 to-[#FFC107] tracking-tight"
+            >
+              Visit Our Website
+            </motion.h1>
+          </div>
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="text-neutral-300 text-xl sm:text-2xl font-sans leading-relaxed text-center mb-12 max-w-3xl mx-auto"
+          >
+            Stay tuned! For upcoming blogs and posts, you can connect with us on social media.
+          </motion.p>
+          {/* Social Media Links and Share Button */}
           <div className="flex justify-center space-x-8 mb-12">
-            {socialMediaLinks.map((social) => (
-              <a
+            {socialMediaLinks.map((social, index) => (
+              <motion.a
                 key={social.name}
-                href={social.url}
+                href={social.name === 'Gmail' ? `mailto:${social.url}` : social.url}
                 target={social.name === 'Gmail' ? '_self' : '_blank'}
                 rel={social.name === 'Gmail' ? '' : 'noopener noreferrer'}
                 aria-label={social.name === 'Gmail' ? 'Send us an email' : `Visit our ${social.name} page`}
-                className="focus:outline-none"
+                className="focus:outline-none focus:ring-2 focus:ring-[#FF5722] rounded-full"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ scale: 1.2, rotate: 5 }}
               >
                 {social.icon}
-              </a>
+              </motion.a>
             ))}
-          </div>
-          <Link
-            to="/"
-            className="mt-12 inline-block text-white bg-[#ff4922] rounded-xl px-6 py-3 hover:bg-[#ff4922]/80 transition-colors mx-auto block w-fit"
-            aria-label="Back to newsletter subscription"
-          >
-            Back to Newsletter
-          </Link>
-          {/* Share Logo */}
-          <div className="flex justify-center mt-6">
-            <button
+            <motion.button
               onClick={handleShare}
-              className="focus:outline-none"
+              className="bg-neutral-800/50 border border-neutral-700 rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-[#FF5722] hover:text-[#FF8A65] hover:shadow-[#FF5722]/50 transition-all"
               aria-label="Share this page"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: socialMediaLinks.length * 0.1 }}
+              whileHover={{ scale: 1.2, rotate: 5 }}
             >
               <svg
-                className="w-12 h-12 text-neutral-100 hover:text-[#ff4922] transition-colors"
+                className="w-8 h-8 text-neutral-100 hover:text-[#FF8A65] transition-colors"
                 fill="currentColor"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92zM18 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM6 13c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45-1-1 1zm12 7.02c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45-1-1 1z" />
               </svg>
-            </button>
+            </motion.button>
           </div>
-          {/* Styled Share Text */}
-          <p className="mt-4 text-white text-lg font-serif text-center">
-            Share
-          </p>
-          {/* Styled Thank You Text with Effect and Emoji */}
-          <p className="mt-2 text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#ff4922] via-[#E1306C] to-[#1DA1F2] hover:from-[#1DA1F2] hover:via-[#E1306C] hover:to-[#ff4922] transition-all duration-500 text-center">
+          {/* Video Section */}
+          <motion.div
+            className="flex justify-center mb-12"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+          >
+            <video
+              src="/assets/logo-video.mp4" // Replace with your 28KB video file path
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-[416px] h-auto rounded-lg border border-neutral-700/50 shadow-lg shadow-[#FF5722]/20"
+              aria-label="RBTechTalks logo animation"
+            />
+          </motion.div>
+          {/* Thank You Text */}
+          <motion.p
+            className="text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#FF5722] via-[#E1306C] to-[#1DA1F2] hover:from-[#1DA1F2] hover:via-[#E1306C] hover:to-[#FF5722] transition-all duration-500 text-center mb-8"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.6 }}
+          >
             Thank you for visiting 🙏
-          </p>
+          </motion.p>
+          {/* Back to Homepage */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.7 }}
+            className="text-center"
+          >
+            <Link
+              to="/"
+              className="inline-block text-neutral-100 bg-gradient-to-r from-[#FF5722] to-[#FFC107] rounded-xl px-8 py-4 font-sans text-lg hover:bg-[#FF5722]/80 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FF5722]"
+              aria-label="Back to homepage"
+            >
+              Back to Homepage
+            </Link>
+          </motion.div>
         </div>
       </div>
     </div>

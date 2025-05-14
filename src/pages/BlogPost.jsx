@@ -58,7 +58,7 @@ const BlogPost = () => {
   }
 
   const handleTocClick = (heading) => {
-    const element = document.getElementById(heading.toLowerCase().replace(/\s/g, '-'));
+    const element = document.getElementById(heating.toLowerCase().replace(/\s/g, '-'));
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -86,20 +86,40 @@ const BlogPost = () => {
   return (
     <div className="min-h-screen w-full bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&auto=format&fit=crop&q=60&ixlib=rb-4.0.3')] bg-cover bg-center bg-no-repeat font-sans relative flex flex-col overflow-hidden">
       <div className="absolute inset-0 bg-black/30 z-0"></div>
-      <nav className="fixed top-0 w-full bg-[#ff4922]/10 backdrop-blur-md shadow-lg z-20">
+      <nav className="fixed top-0 w-full bg-neutral-900/80 backdrop-blur-md shadow-lg z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex-shrink-0">
-              <Link to="/" className="text-3xl font-serif font-bold text-neutral-100">
-                Newsletter
+            <div className="flex-shrink-0 flex items-center">
+              <Link to="/" className="flex items-center">
+                <svg
+                  className="w-8 h-8 mr-2 text-[#FF5722]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                  />
+                </svg>
+                <motion.span
+                  className="text-3xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] to-[#C0C0C0] tracking-wide"
+                  whileHover={{ scale: 1.05, textShadow: "0 0 8px rgba(255, 215, 0, 0.5)" }}
+                  transition={{ duration: 0.3 }}
+                >
+                  RBTechTalks
+                </motion.span>
               </Link>
             </div>
             <div className="hidden md:flex items-center space-x-10">
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  `text-neutral-100 hover:text-[#ff4922] transition-colors font-sans text-lg ${
-                    isActive ? 'text-[#ff4922] border-b-2 border-[#ff4922]' : ''
+                  `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                    isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
                   }`
                 }
                 aria-label="Home page"
@@ -109,8 +129,8 @@ const BlogPost = () => {
               <NavLink
                 to="/blogs"
                 className={({ isActive }) =>
-                  `text-neutral-100 hover:text-[#ff4922] transition-colors font-sans text-lg ${
-                    isActive ? 'text-[#ff4922] border-b-2 border-[#ff4922]' : ''
+                  `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                    isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
                   }`
                 }
                 aria-label="View our blog posts"
@@ -120,8 +140,8 @@ const BlogPost = () => {
               <NavLink
                 to="/posts"
                 className={({ isActive }) =>
-                  `text-neutral-100 hover:text-[#ff4922] transition-colors font-sans text-lg ${
-                    isActive ? 'text-[#ff4922] border-b-2 border-[#ff4922]' : ''
+                  `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                    isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
                   }`
                 }
                 aria-label="View client posts"
@@ -131,8 +151,8 @@ const BlogPost = () => {
               <NavLink
                 to="/website"
                 className={({ isActive }) =>
-                  `text-neutral-100 hover:text-[#ff4922] transition-colors font-sans text-lg ${
-                    isActive ? 'text-[#ff4922] border-b-2 border-[#ff4922]' : ''
+                  `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                    isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
                   }`
                 }
                 aria-label="Visit our website"
@@ -165,13 +185,13 @@ const BlogPost = () => {
           </div>
         </div>
         {isMenuOpen && (
-          <div className="md:hidden bg-[#ff4922]/10 backdrop-blur-md">
+          <div className="md:hidden bg-neutral-900/80 backdrop-blur-md">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  `block text-neutral-100 hover:text-[#ff4922] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
-                    isActive ? 'text-[#ff4922]' : ''
+                  `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                    isActive ? 'text-[#FF5722]' : ''
                   }`
                 }
                 aria-label="Home page"
@@ -182,8 +202,8 @@ const BlogPost = () => {
               <NavLink
                 to="/blogs"
                 className={({ isActive }) =>
-                  `block text-neutral-100 hover:text-[#ff4922] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
-                    isActive ? 'text-[#ff4922]' : ''
+                  `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                    isActive ? 'text-[#FF5722]' : ''
                   }`
                 }
                 aria-label="View our blog posts"
@@ -194,8 +214,8 @@ const BlogPost = () => {
               <NavLink
                 to="/posts"
                 className={({ isActive }) =>
-                  `block text-neutral-100 hover:text-[#ff4922] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
-                    isActive ? 'text-[#ff4922]' : ''
+                  `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                    isActive ? 'text-[#FF5722]' : ''
                   }`
                 }
                 aria-label="View client posts"
@@ -206,8 +226,8 @@ const BlogPost = () => {
               <NavLink
                 to="/website"
                 className={({ isActive }) =>
-                  `block text-neutral-100 hover:text-[#ff4922] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
-                    isActive ? 'text-[#ff4922]' : ''
+                  `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                    isActive ? 'text-[#FF5722]' : ''
                   }`
                 }
                 aria-label="Visit our website"
