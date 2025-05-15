@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { supabase } from './supabaseClient.js';
 
 // Posts data with the three specified posts
 const initialPosts = [
@@ -8,24 +9,46 @@ const initialPosts = [
     id: 1,
     title: 'GENERATIVE AI MIXER',
     url: 'https://www.linkedin.com/posts/cd-conrad_yesterday-i-had-the-pleasure-of-attending-activity-7199108282630778881-q5qC?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEIyWKUB4fJP36ipamWHViQZT1VdTtLBGZU',
-    image: 'img1.jpeg',
+    image: 'https://vvjaqiowlgkabmchvmhi.supabase.co/storage/v1/object/public/image-url//img1.jpeg',
   },
   {
     id: 2,
     title: 'KUDOS TO OWEN J.',
     url: 'https://www.linkedin.com/posts/ranjan-batra-a1804856_chainlit-langchain-activity-7199227392073097216-_bVK?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEIyWKUB4fJP36ipamWHViQZT1VdTtLBGZU',
-    image: 'img2.jpeg',
+    image: 'https://vvjaqiowlgkabmchvmhi.supabase.co/storage/v1/object/public/image-url//img2.jpeg',
   },
   {
     id: 3,
     title: 'DIGITAL NOVA SCOTIA',
     url: 'https://www.linkedin.com/posts/ranjan-batra-a1804856_what-a-turnout-at-the-ai-showcase-mixer-activity-7313673247152111616-cHKK?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEIyWKUB4fJP36ipamWHViQZT1VdTtLBGZU',
-    image: 'img3.jpeg',
+    image: 'https://vvjaqiowlgkabmchvmhi.supabase.co/storage/v1/object/public/image-url//img3.jpeg',
   },
 ];
 
 const Posts = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  // Check authentication status
+  useEffect(() => {
+    async function checkUser() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (error) {
+        console.error('Error checking user:', error.message);
+      }
+    }
+    checkUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      authListener.subscription?.unsubscribe();
+    };
+  }, []);
 
   return (
     <div className="min-h-screen w-full bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&auto=format&fit=crop&q=60&ixlib=rb-4.0.3')] bg-cover bg-center bg-no-repeat font-sans relative flex flex-col overflow-hidden">
@@ -103,6 +126,19 @@ const Posts = () => {
               >
                 Visit Our Website
               </NavLink>
+              {user && (
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                      isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
+                    }`
+                  }
+                  aria-label="Admin dashboard"
+                >
+                  Admin
+                </NavLink>
+              )}
             </div>
             <div className="md:hidden">
               <button
@@ -179,6 +215,20 @@ const Posts = () => {
               >
                 Visit Our Website
               </NavLink>
+              {user && (
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                      isActive ? 'text-[#FF5722]' : ''
+                    }`
+                  }
+                  aria-label="Admin dashboard"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Admin
+                </NavLink>
+              )}
             </div>
           </div>
         )}
@@ -187,7 +237,7 @@ const Posts = () => {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center mb-10">
             <img
-              src="/assets/logo.svg" // Replace with your image file path
+              src="https://vvjaqiowlgkabmchvmhi.supabase.co/storage/v1/object/public/website-assets//logo.svg"
               alt="RBTechTalks Logo"
               className="w-10 h-10 mr-3"
             />
@@ -209,72 +259,77 @@ const Posts = () => {
             Explore our latest posts and blogs
           </motion.p>
           {/* Posts list */}
-          <div className="flex flex-col gap-8">
-            {initialPosts.map((post, index) => (
-              <motion.div
-                key={post.id}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-                className="bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[#FF5722]/20 transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-              >
-                <a
-                  href={post.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block focus:outline-none focus:ring-2 focus:ring-[#FF5722] rounded-xl"
-                  aria-label={`Read ${post.title}`}
+          {initialPosts.length === 0 ? (
+            <motion.p
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="text-neutral-300 text-xl font-sans text-center"
+            >
+              No posts available at the moment.
+            </motion.p>
+          ) : (
+            <div className="flex flex-col gap-8">
+              {initialPosts.map((post, index) => (
+                <motion.div
+                  key={post.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.2 }}
+                  className="bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[#FF5722]/20 transition-all duration-300"
+                  whileHover={{ scale: 1.05 }}
                 >
-                  <div className="relative w-full aspect-square overflow-hidden bg-neutral-700/50">
-                    <img
-                      src={post.image}
-                      srcSet={`
-                        ${post.image} 1080w,
-                        ${post.image.replace('w=1080', 'w=600')} 600w,
-                        ${post.image.replace('w=1080', 'w=300')} 300w
-                      `}
-                      sizes="(max-width: 640px) 300px, (max-width: 1024px) 600px, 1080px"
-                      alt={`Thumbnail for ${post.title} article`}
-                      className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                      onError={(e) => {
-                        console.log(`Failed to load image for ${post.title}: ${post.image}`);
-                        e.target.src = 'https://images.unsplash.com/photo-1594322436404-5a0526db4b9b?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=1080&w=1080';
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/50 to-transparent"></div>
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-80 transition-opacity duration-300">
-                      <svg
-                        className="w-12 h-12 text-white bg-[#FF5722]/70 rounded-full p-3"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
+                  <a
+                    href={post.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block group focus:outline-none focus:ring-2 focus:ring-[#FF5722] rounded-xl"
+                    aria-label={`Read ${post.title}`}
+                  >
+                    <div className="relative w-full aspect-square overflow-hidden bg-neutral-700/50">
+                      <img
+                        src={post.image}
+                        alt={`Thumbnail for ${post.title} article`}
+                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+                        loading="lazy"
+                        onError={(e) => {
+                          console.log(`Failed to load image for ${post.title}: ${post.image}`);
+                          e.target.src = 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&auto=format&fit=crop&q=60';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/50 to-transparent"></div>
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-80 transition-opacity duration-300">
+                        <svg
+                          className="w-12 h-12 text-white bg-[#FF5722]/70 rounded-full p-3"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-6">
-                    <h2 className="text-2xl font-serif font-semibold text-neutral-100 mb-4 tracking-tight">
-                      {post.title}
-                    </h2>
-                    <motion.a
-                      href={post.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block text-white bg-gradient-to-r from-[#FF5722] to-[#FFC107] rounded-xl px-8 py-3 font-sans text-lg hover:bg-[#FF5722]/80 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FF5722]"
-                      aria-label={`Visit ${post.title}`}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      Visit
-                    </motion.a>
-                  </div>
-                </a>
-              </motion.div>
-            ))}
-          </div>
+                    <div className="p-6">
+                      <h2 className="text-2xl font-serif font-semibold text-neutral-100 mb-4 tracking-tight">
+                        {post.title}
+                      </h2>
+                      <motion.a
+                        href={post.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block text-white bg-gradient-to-r from-[#FF5722] to-[#FFC107] rounded-xl px-8 py-3 font-sans text-lg hover:bg-[#FF5722]/80 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#FF5722]"
+                        aria-label={`Visit ${post.title}`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        Visit
+                      </motion.a>
+                    </div>
+                  </a>
+                </motion.div>
+              ))}
+            </div>
+          )}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}

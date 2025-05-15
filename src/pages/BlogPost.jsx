@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams, NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
-import { blogs } from '../data/blogs';
+import { supabase } from '../supabaseClient';
 
 const BlogPost = () => {
   const { id } = useParams();
@@ -10,33 +10,86 @@ const BlogPost = () => {
   const [toc, setToc] = useState([]);
   const [error, setError] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [relatedBlogs, setRelatedBlogs] = useState([]);
 
   useEffect(() => {
-    try {
-      console.log('ID from useParams:', id);
-      const parsedId = parseInt(id);
-      if (isNaN(parsedId)) {
-        throw new Error('Invalid blog ID');
+    async function checkUser() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (error) {
+        console.error('Error checking user:', error.message);
       }
-      const selectedBlog = blogs.find((b) => b.id === parsedId);
-      console.log('Selected Blog:', selectedBlog);
-      if (!selectedBlog) {
-        throw new Error('Blog not found');
-      }
-      setBlog(selectedBlog);
-
-      // Extract table of contents (H2 headings)
-      const headings = [];
-      const regex = /^##\s(.+)$/gm;
-      let match;
-      while ((match = regex.exec(selectedBlog.fullDescription)) !== null) {
-        headings.push(match[1]);
-      }
-      setToc(headings);
-    } catch (err) {
-      console.error('Error in BlogPost:', err.message);
-      setError(err.message);
     }
+    checkUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      authListener.subscription?.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    async function fetchBlog() {
+      try {
+        // Validate UUID format
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(id)) throw new Error('Invalid blog ID format');
+
+        const { data: blogData, error: blogError } = await supabase
+          .from('blogs')
+          .select('id, title, subtitle, image_url, author, date, read_time, full_description')
+          .eq('id', id)
+          .single();
+        if (blogError) throw blogError;
+        if (!blogData) throw new Error('Blog not found');
+
+        setBlog({
+          id: blogData.id,
+          title: blogData.title,
+          subtitle: blogData.subtitle,
+          image: blogData.image_url || 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&auto=format&fit=crop&q=60',
+          author: blogData.author,
+          date: new Date(blogData.date).toLocaleDateString(),
+          readTime: `${blogData.read_time} min read`,
+          fullDescription: blogData.full_description,
+        });
+
+        const headings = [];
+        const regex = /^##\s(.+)$/gm;
+        let match;
+        while ((match = regex.exec(blogData.full_description)) !== null) {
+          headings.push(match[1]);
+        }
+        setToc(headings);
+
+        const { data: relatedData, error: relatedError } = await supabase
+          .from('blogs')
+          .select('id, title, subtitle, image_url, author, date')
+          .neq('id', id)
+          .order('created_at', { ascending: false })
+          .limit(3);
+        if (relatedError) throw relatedError;
+        setRelatedBlogs(
+          relatedData.map((b) => ({
+            id: b.id,
+            title: b.title,
+            subtitle: b.subtitle,
+            image: b.image_url || 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&auto=format&fit=crop&q=60',
+            author: b.author,
+            date: new Date(b.date).toLocaleDateString(),
+          }))
+        );
+      } catch (err) {
+        console.error('Error in BlogPost:', err.message);
+        setError(err.message);
+      }
+    }
+    fetchBlog();
   }, [id]);
 
   if (error) {
@@ -57,31 +110,52 @@ const BlogPost = () => {
     );
   }
 
+  const sanitizeId = (text) => {
+    return text
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-');
+  };
+
   const handleTocClick = (heading) => {
-    const element = document.getElementById(heating.toLowerCase().replace(/\s/g, '-'));
+    const element = document.getElementById(sanitizeId(heading));
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  const shareBlog = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: blog.title,
-        text: blog.subtitle,
-        url: window.location.href,
-      }).catch((err) => console.error('Share failed:', err));
-    } else {
-      navigator.clipboard.writeText(window.location.href)
-        .then(() => alert('Link copied to clipboard!'))
-        .catch((err) => console.error('Copy failed:', err));
+  const shareBlog = async () => {
+    const shareData = {
+      title: blog.title,
+      text: blog.subtitle,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(shareData.url);
+        alert('Link copied to clipboard!');
+      } else {
+        alert('Sharing is not supported on this device. Please copy the URL manually.');
+      }
+    } catch (err) {
+      console.error('Share failed:', err);
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(shareData.url);
+          alert('Link copied to clipboard!');
+        } else {
+          alert('Sharing and clipboard access are not supported. Please copy the URL manually.');
+        }
+      } catch (clipboardErr) {
+        console.error('Clipboard copy failed:', clipboardErr);
+        alert('Sharing and clipboard access are not supported. Please copy the URL manually.');
+      }
     }
   };
-
-  // Related Blogs (excluding the current blog)
-  const relatedBlogs = blogs
-    .filter((b) => b.id !== blog.id)
-    .slice(0, 3);
 
   return (
     <div className="min-h-screen w-full bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&auto=format&fit=crop&q=60&ixlib=rb-4.0.3')] bg-cover bg-center bg-no-repeat font-sans relative flex flex-col overflow-hidden">
@@ -159,6 +233,19 @@ const BlogPost = () => {
               >
                 Visit Our Website
               </NavLink>
+              {user && (
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                      isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
+                    }`
+                  }
+                  aria-label="Admin dashboard"
+                >
+                  Admin
+                </NavLink>
+              )}
             </div>
             <div className="md:hidden">
               <button
@@ -235,13 +322,26 @@ const BlogPost = () => {
               >
                 Visit Our Website
               </NavLink>
+              {user && (
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                      isActive ? 'text-[#FF5722]' : ''
+                    }`
+                  }
+                  aria-label="Admin dashboard"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Admin
+                </NavLink>
+              )}
             </div>
           </div>
         )}
       </nav>
       <div className="flex-1 pt-20 pb-8 z-10">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Top Section */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -274,9 +374,7 @@ const BlogPost = () => {
               Share This Post
             </button>
           </motion.div>
-          {/* Content Body with TOC */}
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Table of Contents */}
             {toc.length > 0 && (
               <motion.aside
                 initial={{ opacity: 0, x: -50 }}
@@ -303,7 +401,6 @@ const BlogPost = () => {
                 </div>
               </motion.aside>
             )}
-            {/* Main Content */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -315,7 +412,7 @@ const BlogPost = () => {
                   components={{
                     h2: ({ node, ...props }) => (
                       <h2
-                        id={props.children.toString().toLowerCase().replace(/\s/g, '-')}
+                        id={sanitizeId(props.children.toString())}
                         className="text-2xl font-serif font-bold text-neutral-100 mt-8 mb-4"
                         {...props}
                       />
@@ -342,7 +439,6 @@ const BlogPost = () => {
               </div>
             </motion.div>
           </div>
-          {/* Related Blogs Section */}
           {relatedBlogs.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -360,7 +456,7 @@ const BlogPost = () => {
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Link to={`/blogs/${relatedBlog.id}`} className="block">
+                    <Link to={`/blog/${relatedBlog.id}`} className="block">
                       <div className="bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[#FF5722]/20 transition-all duration-300">
                         <div className="relative h-48 overflow-hidden">
                           <img
@@ -392,7 +488,6 @@ const BlogPost = () => {
               </div>
             </motion.div>
           )}
-          {/* Back to Blogs Button */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}

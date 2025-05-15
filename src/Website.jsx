@@ -1,9 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { supabase } from './supabaseClient';
 
 const Website = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  // Check authentication status
+  useEffect(() => {
+    async function checkUser() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (error) {
+        console.error('Error checking user:', error.message);
+      }
+    }
+    checkUser();
+
+    // Listen for auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      authListener.subscription?.unsubscribe();
+    };
+  }, []);
 
   // Social media links
   const socialMediaLinks = [
@@ -90,23 +114,32 @@ const Website = () => {
     try {
       if (navigator.share) {
         await navigator.share(shareData);
-      } else {
-        // Fallback: Copy URL to clipboard
+      } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(shareData.url);
         alert('Link copied to clipboard!');
+      } else {
+        alert('Sharing is not supported on this device. Please copy the URL manually.');
       }
     } catch (err) {
       console.error('Share failed:', err);
-      // Fallback: Copy URL to clipboard
-      await navigator.clipboard.writeText(shareData.url);
-      alert('Link copied to clipboard!');
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(shareData.url);
+          alert('Link copied to clipboard!');
+        } else {
+          alert('Sharing and clipboard access are not supported. Please copy the URL manually.');
+        }
+      } catch (clipboardErr) {
+        console.error('Clipboard copy failed:', clipboardErr);
+        alert('Sharing and clipboard access are not supported. Please copy the URL manually.');
+      }
     }
   };
 
   return (
     <div className="min-h-screen w-full bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&auto=format&fit=crop&q=60&ixlib=rb-4.0.3')] bg-cover bg-center bg-no-repeat font-sans relative flex flex-col overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/50 z-0"></div>
-      {/* Navbar from Posts.jsx */}
+      {/* Navbar */}
       <nav className="fixed top-0 w-full bg-neutral-900/80 backdrop-blur-md shadow-lg z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -180,6 +213,19 @@ const Website = () => {
               >
                 Visit Our Website
               </NavLink>
+              {user && (
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                      isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
+                    }`
+                  }
+                  aria-label="Admin dashboard"
+                >
+                  Admin
+                </NavLink>
+              )}
             </div>
             <div className="md:hidden">
               <button
@@ -256,6 +302,20 @@ const Website = () => {
               >
                 Visit Our Website
               </NavLink>
+              {user && (
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                      isActive ? 'text-[#FF5722]' : ''
+                    }`
+                  }
+                  aria-label="Admin dashboard"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Admin
+                </NavLink>
+              )}
             </div>
           </div>
         )}
@@ -265,12 +325,12 @@ const Website = () => {
           {/* Header with Logo */}
           <div className="flex items-center justify-center mb-10">
             <img
-              src="/assets/logo2.png" // Replace with your image file path (e.g., /assets/logo2.png)
+              src="https://vvjaqiowlgkabmchvmhi.supabase.co/storage/v1/object/public/website-assets//logo2.png"
               alt="RBTechTalks Logo"
               className="w-16 h-16 mr-3"
               onError={(e) => {
                 console.log('Failed to load logo');
-                e.target.src = 'https://via.placeholder.com/64'; // Fallback image
+                e.target.src = 'https://via.placeholder.com/64';
               }}
             />
             <motion.h1
@@ -336,7 +396,7 @@ const Website = () => {
             transition={{ duration: 1, delay: 0.5 }}
           >
             <video
-              src="/assets/logo-video.mp4" // Replace with your 28KB video file path
+              src="https://vvjaqiowlgkabmchvmhi.supabase.co/storage/v1/object/public/website-assets//logoVideo.mp4"
               autoPlay
               muted
               loop

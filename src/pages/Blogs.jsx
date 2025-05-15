@@ -1,10 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { blogs } from '../data/blogs';
+import { supabase } from '../supabaseClient';
 
 const Blogs = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [blogs, setBlogs] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    async function checkUser() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (error) {
+        console.error('Error checking user:', error.message);
+      }
+    }
+    checkUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      authListener.subscription?.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    async function fetchBlogs() {
+      try {
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('id, title, subtitle, image_url, author, date, read_time')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        setBlogs(
+          data.map((blog) => ({
+            id: blog.id,
+            title: blog.title,
+            subtitle: blog.subtitle,
+            image: blog.image_url || 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&auto=format&fit=crop&q=60',
+            author: blog.author,
+            date: new Date(blog.date).toLocaleDateString(),
+            read_time: `${blog.read_time} min read`,
+          }))
+        );
+      } catch (error) {
+        setError('Failed to load blogs: ' + error.message);
+        console.error(error);
+      }
+    }
+    fetchBlogs();
+  }, []);
 
   return (
     <div className="min-h-screen w-full bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&auto=format&fit=crop&q=60&ixlib=rb-4.0.3')] bg-cover bg-center bg-no-repeat font-sans relative flex flex-col overflow-hidden">
@@ -82,6 +132,19 @@ const Blogs = () => {
               >
                 Visit Our Website
               </NavLink>
+              {user && (
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                      isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
+                    }`
+                  }
+                  aria-label="Admin dashboard"
+                >
+                  Admin
+                </NavLink>
+              )}
             </div>
             <div className="md:hidden">
               <button
@@ -158,6 +221,20 @@ const Blogs = () => {
               >
                 Visit Our Website
               </NavLink>
+              {user && (
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                      isActive ? 'text-[#FF5722]' : ''
+                    }`
+                  }
+                  aria-label="Admin dashboard"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Admin
+                </NavLink>
+              )}
             </div>
           </div>
         )}
@@ -180,42 +257,65 @@ const Blogs = () => {
           >
             Immerse yourself in our latest insights on technology and innovation.
           </motion.p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {blogs.map((blog) => (
-              <motion.div
-                key={blog.id}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Link to={`/blogs/${blog.id}`} className="block">
-                  <div className="flex bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[#FF5722]/20 transition-all duration-300">
-                    <div className="w-1/3 h-40 overflow-hidden">
-                      <img
-                        src={blog.image}
-                        alt={blog.title}
-                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div className="w-2/3 p-6 flex flex-col justify-between">
-                      <div>
-                        <h3 className="text-2xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-neutral-100 to-[#FFC107] mb-2">
-                          {blog.title}
-                        </h3>
-                        <p className="text-neutral-300 font-sans text-base leading-6 line-clamp-2 mb-3">
-                          {blog.subtitle}
-                        </p>
+          {error && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-red-200 bg-red-500/20 p-4 rounded-lg text-center mb-4"
+            >
+              {error}
+            </motion.p>
+          )}
+          {blogs.length === 0 ? (
+            <motion.p
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="text-neutral-300 text-xl font-sans text-center"
+            >
+              No blogs available at the moment.
+            </motion.p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {blogs.map((blog) => (
+                <motion.div
+                  key={blog.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Link to={`/blog/${blog.id}`} className="block">
+                    <div className="flex bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[#FF5722]/20 transition-all duration-300">
+                      <div className="w-1/3 h-40 overflow-hidden">
+                        <img
+                          src={blog.image}
+                          alt={blog.title}
+                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.target.src = 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&auto=format&fit=crop&q=60';
+                          }}
+                        />
                       </div>
-                      <div className="text-neutral-400 font-sans text-sm">
-                        By {blog.author} • {blog.date} • {blog.readTime}
+                      <div className="w-2/3 p-6 flex flex-col justify-between">
+                        <div>
+                          <h3 className="text-2xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-neutral-100 to-[#FFC107] mb-2">
+                            {blog.title}
+                          </h3>
+                          <p className="text-neutral-300 font-sans text-base leading-6 line-clamp-2 mb-3">
+                            {blog.subtitle}
+                          </p>
+                        </div>
+                        <div className="text-neutral-400 font-sans text-sm">
+                          By {blog.author} • {blog.date} • {blog.read_time}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          )}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
