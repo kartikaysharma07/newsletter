@@ -3,33 +3,12 @@ import { Link, NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { supabase } from './supabaseClient.js';
 
-// Posts data with the three specified posts
-const initialPosts = [
-  {
-    id: 1,
-    title: 'GENERATIVE AI MIXER',
-    url: 'https://www.linkedin.com/posts/cd-conrad_yesterday-i-had-the-pleasure-of-attending-activity-7199108282630778881-q5qC?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEIyWKUB4fJP36ipamWHViQZT1VdTtLBGZU',
-    image: 'https://vvjaqiowlgkabmchvmhi.supabase.co/storage/v1/object/public/image-url//img1.jpeg',
-  },
-  {
-    id: 2,
-    title: 'KUDOS TO OWEN J.',
-    url: 'https://www.linkedin.com/posts/ranjan-batra-a1804856_chainlit-langchain-activity-7199227392073097216-_bVK?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEIyWKUB4fJP36ipamWHViQZT1VdTtLBGZU',
-    image: 'https://vvjaqiowlgkabmchvmhi.supabase.co/storage/v1/object/public/image-url//img2.jpeg',
-  },
-  {
-    id: 3,
-    title: 'DIGITAL NOVA SCOTIA',
-    url: 'https://www.linkedin.com/posts/ranjan-batra-a1804856_what-a-turnout-at-the-ai-showcase-mixer-activity-7313673247152111616-cHKK?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEIyWKUB4fJP36ipamWHViQZT1VdTtLBGZU',
-    image: 'https://vvjaqiowlgkabmchvmhi.supabase.co/storage/v1/object/public/image-url//img3.jpeg',
-  },
-];
-
 const Posts = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [error, setError] = useState('');
 
-  // Check authentication status
   useEffect(() => {
     async function checkUser() {
       try {
@@ -48,6 +27,30 @@ const Posts = () => {
     return () => {
       authListener.subscription?.unsubscribe();
     };
+  }, []);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const { data, error } = await supabase
+          .from('posts')
+          .select('id, title, url, image_url')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        setPosts(
+          data.map((post) => ({
+            id: post.id,
+            title: post.title,
+            url: post.url,
+            image: post.image_url || 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&auto=format&fit=crop&q=60',
+          }))
+        );
+      } catch (error) {
+        setError('Failed to load posts: ' + error.message);
+        console.error(error);
+      }
+    }
+    fetchPosts();
   }, []);
 
   return (
@@ -126,7 +129,7 @@ const Posts = () => {
               >
                 Visit Our Website
               </NavLink>
-              {user && (
+              {user ? (
                 <NavLink
                   to="/admin"
                   className={({ isActive }) =>
@@ -137,6 +140,18 @@ const Posts = () => {
                   aria-label="Admin dashboard"
                 >
                   Admin
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/admin/login"
+                  className={({ isActive }) =>
+                    `text-neutral-100 hover:text-[#FF5722] transition-colors font-sans text-lg ${
+                      isActive ? 'text-[#FF5722] border-b-2 border-[#FF5722]' : ''
+                    }`
+                  }
+                  aria-label="Login to admin dashboard"
+                >
+                  Login
                 </NavLink>
               )}
             </div>
@@ -215,7 +230,7 @@ const Posts = () => {
               >
                 Visit Our Website
               </NavLink>
-              {user && (
+              {user ? (
                 <NavLink
                   to="/admin"
                   className={({ isActive }) =>
@@ -227,6 +242,19 @@ const Posts = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Admin
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/admin/login"
+                  className={({ isActive }) =>
+                    `block text-neutral-100 hover:text-[#FF5722] transition-colors px-3 py-2 rounded-md font-sans text-lg ${
+                      isActive ? 'text-[#FF5722]' : ''
+                    }`
+                  }
+                  aria-label="Login to admin dashboard"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Login
                 </NavLink>
               )}
             </div>
@@ -258,8 +286,16 @@ const Posts = () => {
           >
             Explore our latest posts and blogs
           </motion.p>
-          {/* Posts list */}
-          {initialPosts.length === 0 ? (
+          {error && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-red-200 bg-red-500/20 p-4 rounded-lg text-center mb-4"
+            >
+              {error}
+            </motion.p>
+          )}
+          {posts.length === 0 ? (
             <motion.p
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -270,7 +306,7 @@ const Posts = () => {
             </motion.p>
           ) : (
             <div className="flex flex-col gap-8">
-              {initialPosts.map((post, index) => (
+              {posts.map((post, index) => (
                 <motion.div
                   key={post.id}
                   initial={{ opacity: 0, y: 50 }}
