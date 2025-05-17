@@ -2,42 +2,344 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-gradient-start: #f12711;
+  --color-gradient-end: #f5af19;
+  --color-text-primary: #FFFFFF;
+  --color-background-dark: #1A1A1A;
+  --color-navbar-bg: #2A2A2A;
+  --color-heading-gradient-start: #fceabb;
+  --color-heading-gradient-end: #f8b500;
+}
+
 @layer base {
   html {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-background-dark);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3 {
+    background: linear-gradient(to right, var(--color-heading-gradient-start), var(--color-heading-gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }
 
-/* Custom styles for prose (Markdown rendering) */
+@layer utilities {
+  .bg-clip-text {
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .text-transparent {
+    color: transparent;
+  }
+  .text-gradient {
+    background: linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-primary-80 {
+    color: rgba(255, 255, 255, 0.8); /* Equivalent to --color-text-primary with 80% opacity */
+  }
+  .text-heading-gradient {
+    background: linear-gradient(to right, var(--color-heading-gradient-start), var(--color-heading-gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
 .prose-invert h2 {
-  color: #e5e7eb;
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
+  @apply text-heading-gradient font-['Poppins'] font-semibold;
 }
 
 .prose-invert p {
-  color: #d1d5db;
-  font-family: 'Inter', sans-serif;
-  line-height: 1.75;
+  @apply text-[var(--color-text-primary)] font-['Poppins'] leading-relaxed;
 }
 
 .prose-invert ul,
 .prose-invert ol {
-  color: #d1d5db;
-  font-family: 'Inter', sans-serif;
-  margin-bottom: 1rem;
+  @apply text-[var(--color-text-primary)] font-['Poppins'] mb-4;
 }
 
 .prose-invert li {
-  color: #d1d5db;
-  font-family: 'Inter', sans-serif;
+  @apply text-[var(--color-text-primary)] font-['Poppins'];
 }
 
 .prose-invert blockquote {
-  border-left: 4px solid #FF5722;
-  padding-left: 1rem;
-  font-style: italic;
-  color: #9ca3af;
-  font-family: 'Inter', sans-serif;
-  margin: 1rem 0;
+  border-left-color: var(--color-gradient-start);
+  @apply border-l-4 pl-4 italic text-primary-80 font-['Poppins'] my-4;
 }
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--color-navbar-bg);
+  padding: 1rem 1.5rem;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  height: 72px; /* Fixed height to prevent expansion */
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100%;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  text-decoration: none;
+  background: linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: transform 0.2s ease;
+}
+
+.navbar-logo:hover {
+  transform: scale(1.05);
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-link {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link-active {
+  background: linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dropdown-toggle:hover {
+  background: linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dropdown-caret {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-toggle[aria-expanded="true"] .dropdown-caret {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--color-navbar-bg);
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(241, 39, 17, 0.2); /* Glow effect */
+  padding: 1rem 0;
+  min-width: 240px;
+  z-index: 1001;
+  opacity: 0;
+  transform: scale(0.95) translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border: 1px solid transparent;
+  background-image: linear-gradient(var(--color-navbar-bg), var(--color-navbar-bg)),
+                    linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+.dropdown:hover .dropdown-menu,
+.dropdown-toggle[aria-expanded="true"] + .dropdown-menu {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.dropdown-item {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.hamburger-menu {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.hamburger-menu:hover {
+  color: var(--color-gradient-end);
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 72px;
+  left: 0;
+  width: 100%;
+  background-color: var(--color-navbar-bg);
+  padding: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu.active {
+  transform: translateY(0);
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-nav-link {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link-active {
+  background: linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.mobile-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-dropdown-toggle:hover {
+  background: linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.mobile-dropdown-menu {
+  margin-top: 1rem;
+  padding-left: 2rem;
+  border-left: 3px solid var(--color-gradient-start);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.mobile-dropdown-item {
+  display: block;
+  padding: 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mobile-dropdown-item:hover {
+  background: linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (max-width: 1024px) {
+  .nav-links {
+    display: none;
+  }
+  .hamburger-menu {
+    display: block;
+  }
+  .mobile-menu {
+    transform: translateY(0);
+  }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');

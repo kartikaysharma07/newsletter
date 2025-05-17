@@ -1,3 +1,15 @@
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY');
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 export default async (req) => {
   try {
     if (req.method !== 'POST') {
@@ -7,8 +19,19 @@ export default async (req) => {
       });
     }
 
-    const body = await req.text();
-    const { email } = JSON.parse(body);
+    let email;
+    try {
+      const body = await req.json();
+      email = body.email;
+    } catch {
+      return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+    }
 
     if (!email) {
       return new Response(JSON.stringify({ error: 'Email is required' }), {
@@ -31,25 +54,28 @@ export default async (req) => {
       });
     }
 
-    // Initialize Supabase client (server-side)
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_ANON_KEY
-    );
-
-    // Insert email into newsletter table
-    const { error } = await supabase
-      .from('newsletter')
-      .insert([{ email }]);
+    const { error } = await supabase.from('newsletter').insert([{ email }]);
 
     if (error) {
+      console.error('Supabase error details:', error);
+      if (error.code === '23505') {
+        return new Response(
+          JSON.stringify({ error: 'Email already subscribed' }),
+          {
+            status: 400,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+          }
+        );
+      }
       throw new Error(error.message || 'Failed to subscribe');
     }
 
     return new Response(
       JSON.stringify({
-        message: 'Thanks for joining the waitlist! Check your email for confirmation.',
+        message: 'Successfully subscribed to the newsletter!',
       }),
       {
         status: 200,
@@ -60,7 +86,7 @@ export default async (req) => {
       }
     );
   } catch (error) {
-    console.error('Supabase error:', error.message);
+    console.error('Error:', error.message);
     return new Response(
       JSON.stringify({
         error: 'Something went wrong. Please try again later.',
