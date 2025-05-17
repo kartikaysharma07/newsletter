@@ -234,11 +234,11 @@ const Admin = memo(() => {
           <section className="mb-12" role="region" aria-label="Create new post">
             <h2 className="text-2xl font-serif font-semibold text-neutral-100 mb-4">Create New Post</h2>
             <FormGenerator
-              fields=[
+              fields={[
                 { name: 'title', label: 'Title', type: 'text', required: true },
                 { name: 'url', label: 'URL', type: 'url', required: true },
                 { name: 'image', label: 'Image', type: 'file', accept: 'image/*' },
-              ]
+              ]}
               onSubmit={handlePostSubmit}
               submitButtonText="Create Post"
               className="bg-neutral-800/50 backdrop-blur-md p-6 rounded-xl border border-neutral-700"
