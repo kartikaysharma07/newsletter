@@ -1,10 +1,6 @@
 {
   "builds": [
     {
-      "src": "package.json",
-      "use": "@vercel/node"
-    },
-    {
       "src": "index.html",
       "use": "@vercel/static-build",
       "config": {
@@ -14,12 +10,6 @@
       }
     }
   ],
-  "functions": {
-    "api/subscribe.js": {
-      "memory": 128,
-      "maxDuration": 10
-    }
-  },
   "headers": [
     {
       "source": "/api/(.*)",
@@ -37,6 +27,12 @@
           "value": "Content-Type"
         }
       ]
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
