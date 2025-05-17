@@ -1,15 +1,10 @@
 {
-  "builds": [
-    {
-      "src": "index.html",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist",
-        "buildCommand": "npm run build",
-        "devCommand": "npm run dev"
-      }
+  "functions": {
+    "api/**.js": {
+      "memory": 128,
+      "maxDuration": 10
     }
-  ],
+  },
   "headers": [
     {
       "source": "/api/(.*)",
