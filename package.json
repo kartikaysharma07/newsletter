@@ -5,9 +5,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
+    "start": "serve dist -l $PORT",
     "lint": "eslint . --ext .js,.jsx",
     "format": "prettier --write \"src/**/*.{js,jsx}\""
   },
@@ -30,6 +31,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
+    "serve": "^14.2.4",
     "vite": "^5.4.8"
   },
   "eslintConfig": {
