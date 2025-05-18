@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: rbtechtalks
+    env: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_SUPABASE_URL
+        value: https://vvjaqiowlgkabmchvmhi.supabase.co
+      - key: VITE_SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2amFxaW93bGdrYWJtY2h2bWhpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODQ2NjIsImV4cCI6MjA2MjE2MDY2Mn0.qBzD34QV1HgRrYkitRStjNnSDQUMQEVKvCpwmrHQAJM
+      - key: VITE_API_URL
+        value: /api
