@@ -94,6 +94,7 @@ const App = memo(() => {
             <Route path="/website" element={<Website />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="*" element={<div>404: Page Not Found</div>} />
           </Routes>
         </main>
       </div>
