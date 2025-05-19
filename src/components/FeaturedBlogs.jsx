@@ -1,12 +1,33 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useSwipeable } from 'react-swipeable';
 
 // Memoized FeaturedBlogs component
 const FeaturedBlogs = memo(({ blogs, isLoadingBlogs, blogError }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoSliding, setIsAutoSliding] = useState(true);
+  const [slidesPerView, setSlidesPerView] = useState(3); // Default for desktop
+  const containerRef = useRef(null);
 
+  // Determine slides per view based on window width
+  useEffect(() => {
+    const updateSlidesPerView = () => {
+      if (window.innerWidth < 640) {
+        setSlidesPerView(1); // Mobile: 1 slide
+      } else if (window.innerWidth < 768) {
+        setSlidesPerView(2); // Small screens: 2 slides
+      } else {
+        setSlidesPerView(3); // Desktop: 3 slides
+      }
+    };
+
+    updateSlidesPerView();
+    window.addEventListener('resize', updateSlidesPerView);
+    return () => window.removeEventListener('resize', updateSlidesPerView);
+  }, []);
+
+  // Auto-slide effect
   useEffect(() => {
     if (isAutoSliding && blogs.length > 0) {
       const interval = setInterval(() => {
@@ -16,6 +37,7 @@ const FeaturedBlogs = memo(({ blogs, isLoadingBlogs, blogError }) => {
     }
   }, [isAutoSliding, blogs]);
 
+  // Navigation functions
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % blogs.length);
     setIsAutoSliding(false);
@@ -26,11 +48,24 @@ const FeaturedBlogs = memo(({ blogs, isLoadingBlogs, blogError }) => {
     setIsAutoSliding(false);
   };
 
+  // Swipe handlers for mobile
+  const handlers = useSwipeable({
+    onSwipedLeft: () => nextSlide(),
+    onSwipedRight: () => prevSlide(),
+    trackMouse: true, // Enable mouse dragging for desktop
+    delta: 10, // Minimum swipe distance
+  });
+
+  // Calculate slide width percentage
+  const slideWidthPercentage = 100 / slidesPerView;
+
   return (
     <div
       className="relative max-w-[1400px] mx-auto px-4 py-12"
       onMouseEnter={() => setIsAutoSliding(false)}
       onMouseLeave={() => setIsAutoSliding(true)}
+      ref={containerRef}
+      {...handlers}
     >
       <h2 className="text-4xl font-['Playfair_Display'] font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFC107] text-center mb-8 drop-shadow-lg">
         Featured Blogs
@@ -64,23 +99,25 @@ const FeaturedBlogs = memo(({ blogs, isLoadingBlogs, blogError }) => {
         <div className="overflow-hidden">
           <motion.div
             className="flex"
-            animate={{ x: `-${currentSlide * (100 / 3)}%` }}
+            animate={{ x: `-${currentSlide * slideWidthPercentage}%` }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
+            style={{ width: `${blogs.length * slideWidthPercentage}%` }}
           >
             {blogs.map((blog) => (
               <motion.div
                 key={blog.id}
-                className="w-full sm:w-1/2 md:w-1/3 flex-shrink-0 px-3"
+                className="flex-shrink-0 px-3"
+                style={{ width: `${slideWidthPercentage}%` }}
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               >
                 <Link to={blog.url} className="block h-full">
                   <div className="bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[#FF5722]/20 transition-all duration-300 flex flex-col h-[500px]">
-                    <div className="relative h-80 overflow-hidden flex-shrink-0">
+                    <div className="relative h-80 overflow-hidden flex-shrink-0 bg-neutral-900">
                       <img
                         src={blog.image}
                         alt={blog.title}
-                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                        className="w-full h-full object-contain transition-transform duration-500 hover:scale-110"
                         loading="lazy"
                         onError={(e) => {
                           e.target.src =
