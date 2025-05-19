@@ -33,8 +33,8 @@ const FeaturedBlogs = memo(({ blogs, isLoadingBlogs, blogError }) => {
       onMouseLeave={() => setIsAutoSliding(true)}
     >
       <h2 className="text-4xl font-['Playfair_Display'] font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-[#FFC107] text-center mb-8 drop-shadow-lg">
-  Featured Blogs
-</h2>
+        Featured Blogs
+      </h2>
       {blogError && (
         <motion.p
           initial={{ opacity: 0 }}
@@ -74,9 +74,9 @@ const FeaturedBlogs = memo(({ blogs, isLoadingBlogs, blogError }) => {
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               >
-                <Link to={blog.url} className="block">
-                  <div className="bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[#FF5722]/20 transition-all duration-300">
-                    <div className="relative h-80 overflow-hidden">
+                <Link to={blog.url} className="block h-full">
+                  <div className="bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[#FF5722]/20 transition-all duration-300 flex flex-col h-[500px]">
+                    <div className="relative h-80 overflow-hidden flex-shrink-0">
                       <img
                         src={blog.image}
                         alt={blog.title}
@@ -89,11 +89,11 @@ const FeaturedBlogs = memo(({ blogs, isLoadingBlogs, blogError }) => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/50 to-transparent"></div>
                     </div>
-                    <div className="p-6">
-                      <h3 className="text-2xl font-serif font-semibold text-neutral-100 mb-3">
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="text-2xl font-serif font-semibold text-neutral-100 mb-3 line-clamp-2 h-16">
                         {blog.title}
                       </h3>
-                      <p className="text-neutral-300 font-sans text-base leading-6 line-clamp-3">
+                      <p className="text-neutral-300 font-sans text-base leading-6 line-clamp-3 flex-grow">
                         {blog.excerpt}
                       </p>
                       <motion.span

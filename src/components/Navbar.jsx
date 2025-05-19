@@ -14,7 +14,7 @@ const Navbar = () => {
       aria: 'Learn resources',
       isDropdown: true,
       dropdown: [
-        { to: '/learn/consultation', label: 'Book Consultation Call', aria: 'Book a consultation call' },
+        { to: '/learn/consultation', label: 'Book 1:1 Call', aria: 'Book a consultation call' },
         { to: '/learn/ai-ml', label: 'Learn AI/ML', aria: 'Learn about AI and Machine Learning' },
       ],
     },

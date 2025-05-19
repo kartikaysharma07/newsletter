@@ -41,10 +41,10 @@ const Home = memo(() => {
         className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center"
       >
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-heading-gradient mb-6 drop-shadow-lg">
-          Discover the Future of Tech
+           Unleash Tomorrow's Tech with Ranjan Batra TechTalks
         </h1>
         <p className="text-gray-200 text-lg sm:text-xl md:text-2xl font-sans leading-8 max-w-3xl mx-auto drop-shadow">
-          Join us to explore cutting-edge insights, trends, and innovations shaping tomorrow.
+          Dive into bold ideas, emerging trends, and groundbreaking innovations driving the future.
         </p>
       </motion.div>
       <FeaturedBlogs
