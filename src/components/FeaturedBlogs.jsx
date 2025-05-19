@@ -7,22 +7,40 @@ const FeaturedBlogs = memo(({ blogs, isLoadingBlogs, blogError }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoSliding, setIsAutoSliding] = useState(true);
 
+  // Calculate the maximum slide index based on the number of blogs
+  const maxSlide = blogs.length > 0 ? Math.max(0, blogs.length - 3) : 0; // Show 3 blogs at a time
+
   useEffect(() => {
-    if (isAutoSliding && blogs.length > 0) {
+    if (isAutoSliding && blogs.length > 0 && blogs.length > 3) {
       const interval = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % blogs.length);
+        setCurrentSlide((prev) => {
+          if (prev >= maxSlide) {
+            return 0; // Reset to first slide when reaching the last
+          }
+          return prev + 1;
+        });
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [isAutoSliding, blogs]);
+  }, [isAutoSliding, blogs, maxSlide]);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % blogs.length);
+    setCurrentSlide((prev) => {
+      if (prev >= maxSlide) {
+        return maxSlide; // Stop at the last slide
+      }
+      return prev + 1;
+    });
     setIsAutoSliding(false);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + blogs.length) % blogs.length);
+    setCurrentSlide((prev) => {
+      if (prev <= 0) {
+        return 0; // Stop at the first slide
+      }
+      return prev - 1;
+    });
     setIsAutoSliding(false);
   };
 
@@ -109,50 +127,56 @@ const FeaturedBlogs = memo(({ blogs, isLoadingBlogs, blogError }) => {
               </motion.div>
             ))}
           </motion.div>
-          <motion.button
-            onClick={prevSlide}
-            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-neutral-900/50 text-neutral-100 p-3 rounded-full hover:bg-[#FF5722]/80"
-            aria-label="Previous slide"
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </motion.button>
-          <motion.button
-            onClick={nextSlide}
-            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-neutral-900/50 text-neutral-100 p-3 rounded-full hover:bg-[#FF5722]/80"
-            aria-label="Next slide"
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </motion.button>
+          {blogs.length > 3 && (
+            <>
+              <motion.button
+                onClick={prevSlide}
+                className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-neutral-900/50 text-neutral-100 p-3 rounded-full hover:bg-[#FF5722]/80 focus:outline-none"
+                aria-label="Previous slide"
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+                disabled={currentSlide === 0} // Disable when at first slide
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </motion.button>
+              <motion.button
+                onClick={nextSlide}
+                className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-neutral-900/50 text-neutral-100 p-3 rounded-full hover:bg-[#FF5722]/80 focus:outline-none"
+                aria-label="Next slide"
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+                disabled={currentSlide >= maxSlide} // Disable when at last slide
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </motion.button>
+            </>
+          )}
         </div>
       )}
     </div>
