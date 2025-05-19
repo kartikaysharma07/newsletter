@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -10,6 +10,7 @@ import DataTable from '../components/DataTable';
 const Admin = memo(() => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [editingBlog, setEditingBlog] = useState(null); // Track blog being edited
 
   // Check user authentication
   const { data: user, isLoading: isUserLoading } = useQuery({
@@ -28,7 +29,7 @@ const Admin = memo(() => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('blogs')
-        .select('id, title, subtitle, image_url, author, date, read_time')
+        .select('id, title, subtitle, image_url, author, date, read_time, full_description')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data.map((blog) => ({
@@ -39,6 +40,7 @@ const Admin = memo(() => {
         author: blog.author,
         date: new Date(blog.date).toLocaleDateString(),
         read_time: `${blog.read_time} min read`,
+        full_description: blog.full_description,
       }));
     },
     enabled: !!user,
@@ -70,6 +72,18 @@ const Admin = memo(() => {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries(['blogs']),
+  });
+
+  // Update blog mutation
+  const updateBlogMutation = useMutation({
+    mutationFn: async ({ id, updates }) => {
+      const { error } = await supabase.from('blogs').update(updates).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['blogs']);
+      setEditingBlog(null); // Close edit form after success
+    },
   });
 
   // Delete post mutation
@@ -139,9 +153,59 @@ const Admin = memo(() => {
     [queryClient]
   );
 
+  // Handle edit blog
+  const handleEditBlog = useCallback(
+    async (id, formData) => {
+      try {
+        const { title, subtitle, image, author, date, read_time, full_description } = formData;
+        let image_url = image;
+
+        if (image instanceof File) {
+          const { data, error } = await supabase.storage
+            .from('blog-images')
+            .upload(`public/${Date.now()}_${image.name}`, image);
+          if (error) throw error;
+          image_url = supabase.storage.from('blog-images').getPublicUrl(data.path).data.publicUrl;
+        }
+
+        const updates = {
+          title,
+          subtitle,
+          image_url,
+          author,
+          date,
+          read_time: parseInt(read_time, 10),
+          full_description,
+        };
+
+        await updateBlogMutation.mutateAsync({ id, updates });
+      } catch (err) {
+        throw new Error(`Failed to update blog: ${err.message}`);
+      }
+    },
+    [updateBlogMutation]
+  );
+
   // Handle delete actions
-  const handleDeleteBlog = useCallback((id) => deleteBlogMutation.mutate(id), [deleteBlogMutation]);
-  const handleDeletePost = useCallback((id) => deletePostMutation.mutate(id), [deletePostMutation]);
+  const handleDeleteBlog = useCallback((id) => {
+    deleteBlogMutation.mutate(id);
+  }, [deleteBlogMutation]);
+
+  const handleDeletePost = useCallback((id) => {
+    deletePostMutation.mutate(id);
+  }, [deletePostMutation]);
+
+  // Handle edit button click
+  const handleEditBlogClick = useCallback((blog) => {
+    setEditingBlog(blog);
+  }, []);
+
+  // Handle delete button click for DataTable
+  const handleDeleteBlogClick = useCallback((type, id) => {
+    if (type === 'blogs') {
+      handleDeleteBlog(id);
+    }
+  }, [handleDeleteBlog]);
 
   if (isUserLoading) {
     return (
@@ -205,29 +269,56 @@ const Admin = memo(() => {
             ) : blogs.length === 0 ? (
               <p className="text-neutral-300 font-sans">No blogs available.</p>
             ) : (
-              <DataTable
-                data={blogs}
-                columns={[
-                  { header: 'Title', accessor: 'title' },
-                  { header: 'Author', accessor: 'author' },
-                  { header: 'Date', accessor: 'date' },
-                  {
-                    header: 'Actions',
-                    accessor: 'id',
-                    render: (id) => (
-                      <button
-                        onClick={() => handleDeleteBlog(id)}
-                        className="text-red-400 hover:text-red-600 font-sans"
-                        disabled={deleteBlogMutation.isPending}
-                        aria-label={`Delete blog ${id}`}
-                      >
-                        Delete
-                      </button>
-                    ),
-                  },
-                ]}
-                className="bg-neutral-800/50 backdrop-blur-md rounded-xl border border-neutral-700"
-              />
+              <>
+                <DataTable
+                  type="blogs"
+                  data={blogs}
+                  onEdit={handleEditBlogClick}
+                  onDelete={handleDeleteBlogClick}
+                  className="bg-neutral-800/50 backdrop-blur-md rounded-xl border border-neutral-700"
+                />
+                {editingBlog && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-6"
+                  >
+                    <h3 className="text-2xl font-serif font-semibold text-neutral-100 mb-4">
+                      Edit Blog: {editingBlog.title}
+                    </h3>
+                    <FormGenerator
+                      fields={[
+                        { name: 'title', label: 'Title', type: 'text', required: true },
+                        { name: 'subtitle', label: 'Subtitle', type: 'text', required: true },
+                        { name: 'image', label: 'Image', type: 'file', accept: 'image/*' },
+                        { name: 'author', label: 'Author', type: 'text', required: true },
+                        { name: 'date', label: 'Date', type: 'date', required: true },
+                        { name: 'read_time', label: 'Read Time (minutes)', type: 'number', required: true },
+                        { name: 'full_description', label: 'Full Description', type: 'textarea', required: true },
+                      ]}
+                      onSubmit={(formData) => handleEditBlog(editingBlog.id, formData)}
+                      submitButtonText="Update Blog"
+                      defaultValues={{
+                        title: editingBlog.title,
+                        subtitle: editingBlog.subtitle,
+                        image: editingBlog.image_url,
+                        author: editingBlog.author,
+                        date: new Date(editingBlog.date.split('/').reverse().join('-')).toISOString().split('T')[0], // Convert to YYYY-MM-DD
+                        read_time: parseInt(editingBlog.read_time, 10),
+                        full_description: editingBlog.full_description,
+                      }}
+                      className="bg-neutral-800/50 backdrop-blur-md p-6 rounded-xl border border-neutral-700"
+                    />
+                    <button
+                      onClick={() => setEditingBlog(null)}
+                      className="mt-4 text-neutral-300 hover:text-neutral-100 font-sans"
+                      aria-label="Cancel editing"
+                    >
+                      Cancel
+                    </button>
+                  </motion.div>
+                )}
+              </>
             )}
           </section>
 
@@ -253,39 +344,10 @@ const Admin = memo(() => {
               <p className="text-neutral-300 font-sans">No posts available.</p>
             ) : (
               <DataTable
+                type="posts"
                 data={posts}
-                columns={[
-                  { header: 'Title', accessor: 'title' },
-                  {
-                    header: 'URL',
-                    accessor: 'url',
-                    render: (url) => (
-                      <a
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#FFC107] hover:underline font-sans"
-                        aria-label={`Visit ${url}`}
-                      >
-                        {url}
-                      </a>
-                    ),
-                  },
-                  {
-                    header: 'Actions',
-                    accessor: 'id',
-                    render: (id) => (
-                      <button
-                        onClick={() => handleDeletePost(id)}
-                        className="text-red-400 hover:text-red-600 font-sans"
-                        disabled={deletePostMutation.isPending}
-                        aria-label={`Delete post ${id}`}
-                      >
-                        Delete
-                      </button>
-                    ),
-                  },
-                ]}
+                onEdit={() => {}}
+                onDelete={(type, id) => handleDeletePost(id)}
                 className="bg-neutral-800/50 backdrop-blur-md rounded-xl border border-neutral-700"
               />
             )}

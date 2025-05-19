@@ -126,30 +126,37 @@ const BlogPost = memo(() => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa')] bg-cover bg-center font-sans flex items-center justify-center">
-        <div className="absolute inset-0 bg-black/30 z-0"></div>
-        <p className="text-neutral-100 text-2xl z-10">{error}</p>
+      <div className="min-h-screen bg-neutral-800 font-sans flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/20 z-0"></div>
+        <p className="text-neutral-200 text-2xl z-10">{error}</p>
       </div>
     );
   }
 
   if (isLoading || !blog) {
     return (
-      <div className="min-h-screen bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa')] bg-cover bg-center font-sans flex items-center justify-center">
-        <div className="absolute inset-0 bg-black/30 z-0"></div>
-        <p className="text-neutral-100 text-2xl z-10">Loading...</p>
+      <div className="min-h-screen bg-neutral-800 font-sans flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/20 z-0"></div>
+        <p className="text-neutral-200 text-2xl z-10">Loading...</p>
       </div>
     );
   }
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa')] bg-cover bg-center font-sans flex flex-col overflow-hidden">
-        <div className="absolute inset-0 bg-black/30 z-0"></div>
+      <div className="min-h-screen bg-neutral-800 font-sans flex flex-col overflow-hidden">
+        <div className="absolute inset-0 bg-black/20 z-0"></div>
         <Navbar user={user} />
         <div className="flex-1 pt-28 sm:pt-32 pb-8 z-20">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
+              <h1 className="text-5xl font-serif font-bold text-heading-gradient mb-4">
+                {blog.title}
+              </h1>
+              <p className="text-2xl font-sans italic text-neutral-300 mb-6">{blog.subtitle}</p>
+              <div className="text-neutral-300 font-sans text-sm mb-8">
+                By {blog.author} • {blog.date} • {blog.readTime}
+              </div>
               <img
                 src={blog.image}
                 alt={blog.title}
@@ -157,16 +164,9 @@ const BlogPost = memo(() => {
                 loading="lazy"
                 onError={(e) => (e.target.src = 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&auto=format&fit=crop&q=60')}
               />
-              <h1 className="text-5xl font-serif font-bold text-heading-gradient mb-4">
-                {blog.title}
-              </h1>
-              <p className="text-2xl font-sans italic text-neutral-400 mb-6">{blog.subtitle}</p>
-              <div className="text-neutral-400 font-sans text-sm mb-8">
-                By {blog.author} • {blog.date} • {blog.readTime}
-              </div>
               <button
                 onClick={() => shareBlog(blog)}
-                className="text-white bg-gradient-to-r from-[#FF5722] to-[#FFC107] rounded-xl px-5 py-2 font-sans hover:bg-[#FF5722]/80"
+                className="text-neutral-200 bg-gradient-to-r from-[#FF5722] to-[#FFC107] rounded-xl px-5 py-2 font-sans hover:bg-[#FF5722]/80"
                 aria-label="Share this blog post"
               >
                 Share This Post
@@ -179,14 +179,14 @@ const BlogPost = memo(() => {
                   animate={{ opacity: 1, x: 0 }}
                   className="lg:w-1/4 hidden lg:block"
                 >
-                  <div className="sticky top-24 bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl p-6">
+                  <div className="sticky top-24 bg-neutral-700/50 backdrop-blur-md border border-neutral-600/30 rounded-xl p-6">
                     <h2 className="text-xl font-serif font-bold text-heading-gradient mb-4">Table of Contents</h2>
                     <ul className="space-y-2">
                       {toc.map((heading, index) => (
                         <li key={index}>
                           <button
                             onClick={() => handleTocClick(heading)}
-                            className="text-neutral-300 font-sans text-sm hover:text-[#f8b500] transition-colors"
+                            className="text-neutral-200 font-sans text-sm hover:text-[#f8b500] transition-colors"
                           >
                             {heading}
                           </button>
@@ -207,17 +207,17 @@ const BlogPost = memo(() => {
                           {...props}
                         />
                       ),
-                      p: ({ node, ...props }) => <p className="text-neutral-300 font-sans leading-7 mb-4" {...props} />,
+                      p: ({ node, ...props }) => <p className="text-neutral-200 font-sans leading-7 mb-4" {...props} />,
                       ul: ({ node, ...props }) => (
-                        <ul className="list-disc list-inside text-neutral-300 font-sans mb-4" {...props} />
+                        <ul className="list-disc list-inside text-neutral-200 font-sans mb-4" {...props} />
                       ),
                       ol: ({ node, ...props }) => (
-                        <ol className="list-decimal list-inside text-neutral-300 font-sans mb-4" {...props} />
+                        <ol className="list-decimal list-inside text-neutral-200 font-sans mb-4" {...props} />
                       ),
-                      li: ({ node, ...props }) => <li className="text-neutral-300 font-sans" {...props} />,
+                      li: ({ node, ...props }) => <li className="text-neutral-200 font-sans" {...props} />,
                       blockquote: ({ node, ...props }) => (
                         <blockquote
-                          className="border-l-4 border-[#FF5722] pl-4 italic text-neutral-400 font-sans my-4"
+                          className="border-l-4 border-[#FF5722] pl-4 italic text-neutral-300 font-sans my-4"
                           {...props}
                         />
                       ),
@@ -243,7 +243,7 @@ const BlogPost = memo(() => {
             <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} className="mt-12 text-center">
               <Link
                 to="/blogs"
-                className="inline-block text-neutral-100 bg-gradient-to-r from-[#FF5722] to-[#FFC107] rounded-xl px-8 py-4 hover:bg-[#FF5722]/80 font-sans"
+                className="inline-block text-neutral-200 bg-gradient-to-r from-[#FF5722] to-[#FFC107] rounded-xl px-8 py-4 hover:bg-[#FF5722]/80 font-sans"
                 aria-label="Back to all blogs"
               >
                 Back to Blogs

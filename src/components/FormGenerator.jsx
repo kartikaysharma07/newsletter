@@ -1,8 +1,8 @@
 import React, { useState, memo } from 'react';
 import { motion } from 'framer-motion';
 
-const FormGenerator = memo(({ fields = [], onSubmit, submitButtonText = 'Submit', className = '' }) => {
-  const [formData, setFormData] = useState({});
+const FormGenerator = memo(({ fields = [], onSubmit, submitButtonText = 'Submit', className = '', defaultValues = {} }) => {
+  const [formData, setFormData] = useState(defaultValues);
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -36,7 +36,7 @@ const FormGenerator = memo(({ fields = [], onSubmit, submitButtonText = 'Submit'
     }
     try {
       await onSubmit(formData);
-      setFormData({});
+      setFormData(defaultValues); // Reset to defaultValues after submit
       setErrors({});
     } catch (err) {
       setErrors({ general: err.message });

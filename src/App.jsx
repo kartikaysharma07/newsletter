@@ -33,17 +33,17 @@ const Home = memo(() => {
   });
 
   return (
-    <div className="flex-1 pt-28 sm:pt-32 relative z-20 min-h-[calc(100vh-4.5rem)]">
+    <div className="flex-1 pt-16 relative z-20 min-h-screen">
       <motion.div
-        initial={{ opacity: 0, y: 50 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center"
+        transition={{ duration: 0.8 }}
+        className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center"
       >
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-heading-gradient mb-6 drop-shadow-lg">
-           Unleash Tomorrow's Tech with Ranjan Batra TechTalks
+        <h1 className="text-3xl sm:text-4xl font-serif font-bold text-heading-gradient mb-4 drop-shadow">
+          Unleash Tomorrow's Tech with Ranjan Batra TechTalks
         </h1>
-        <p className="text-gray-200 text-lg sm:text-xl md:text-2xl font-sans leading-8 max-w-3xl mx-auto drop-shadow">
+        <p className="text-neutral-100 text-base sm:text-lg font-sans leading-6 max-w-3xl mx-auto drop-shadow">
           Dive into bold ideas, emerging trends, and groundbreaking innovations driving the future.
         </p>
       </motion.div>
@@ -82,8 +82,8 @@ const App = memo(() => {
 
   return (
     <Router>
-      <div className="min-h-screen w-full bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&auto=format&fit=crop&q=60&ixlib=rb-4.0.3')] bg-cover bg-center bg-no-repeat font-sans relative flex flex-col">
-        <div className="absolute inset-0 bg-black/50 z-0"></div>
+      <div className="min-h-screen w-full bg-neutral-800 font-sans relative flex flex-col">
+        <div className="absolute inset-0 bg-black/30 z-0"></div>
         <Navbar user={user} />
         <main className="flex-1 relative z-10">
           <Routes>
@@ -94,7 +94,7 @@ const App = memo(() => {
             <Route path="/website" element={<Website />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="*" element={<div>404: Page Not Found</div>} />
+            <Route path="*" element={<div className="text-neutral-100 text-center py-12">404: Page Not Found</div>} />
           </Routes>
         </main>
       </div>
