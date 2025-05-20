@@ -126,7 +126,16 @@ const BlogPost = memo(() => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-neutral-800 font-sans flex items-center justify-center">
+      <div
+        className="min-h-screen bg-neutral-800 font-sans flex items-center justify-center"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(26, 26, 26, 0.5), rgba(26, 26, 26, 0.7)), url('/bg2.jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+        }}
+      >
         <div className="absolute inset-0 bg-black/20 z-0"></div>
         <p className="text-neutral-200 text-2xl z-10">{error}</p>
       </div>
@@ -135,7 +144,16 @@ const BlogPost = memo(() => {
 
   if (isLoading || !blog) {
     return (
-      <div className="min-h-screen bg-neutral-800 font-sans flex items-center justify-center">
+      <div
+        className="min-h-screen bg-neutral-800 font-sans flex items-center justify-center"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(26, 26, 26, 0.5), rgba(26, 26, 26, 0.7)), url('/bg2.jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+        }}
+      >
         <div className="absolute inset-0 bg-black/20 z-0"></div>
         <p className="text-neutral-200 text-2xl z-10">Loading...</p>
       </div>
@@ -144,7 +162,16 @@ const BlogPost = memo(() => {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-neutral-800 font-sans flex flex-col overflow-hidden">
+      <div
+        className="min-h-screen bg-neutral-800 font-sans flex flex-col overflow-hidden"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(26, 26, 26, 0.5), rgba(26, 26, 26, 0.7)), url('/bg2.jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+        }}
+      >
         <div className="absolute inset-0 bg-black/20 z-0"></div>
         <Navbar user={user} />
         <div className="flex-1 pt-28 sm:pt-32 pb-8 z-20">

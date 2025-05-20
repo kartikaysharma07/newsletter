@@ -21,6 +21,11 @@
     scroll-behavior: smooth;
   }
   body {
+  @apply bg-cover bg-no-repeat bg-fixed bg-center;
+  
+  background-image: url('/bg.jpg'); /* Replace with your image path */
+  }
+  body {
     background-color: var(--color-background-dark);
     color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;

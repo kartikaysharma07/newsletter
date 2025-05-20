@@ -1,6 +1,6 @@
 import React, { memo, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'; // Ensure this import is correct
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './pages/supabaseClient';
 import Blogs from './pages/Blogs';
@@ -13,6 +13,7 @@ import Navbar from './components/Navbar';
 import FeaturedBlogs from './components/FeaturedBlogs';
 import NewsletterForm from './components/NewsletterForm';
 
+// Home component (unchanged)
 const Home = memo(() => {
   const { data: blogs = [], isLoading, error } = useQuery({
     queryKey: ['featuredBlogs'],
@@ -82,7 +83,16 @@ const App = memo(() => {
 
   return (
     <Router>
-      <div className="min-h-screen w-full bg-neutral-800 font-sans relative flex flex-col">
+      <div
+        className="min-h-screen w-full bg-neutral-800 font-sans relative flex flex-col"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(26, 26, 26, 0.5), rgba(26, 26, 26, 0.7)), url('/bg.jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+        }}
+      >
         <div className="absolute inset-0 bg-black/30 z-0"></div>
         <Navbar user={user} />
         <main className="flex-1 relative z-10">

@@ -39,7 +39,7 @@ const Blogs = memo(() => {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-neutral-900 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa')] bg-cover bg-center font-sans flex flex-col overflow-hidden">
+      <div className="min-h-screen bg-neutral-900 bg-[url('/bg5.jpg')] bg-cover bg-center font-sans flex flex-col overflow-hidden">
         <div className="absolute inset-0 bg-black/30 z-0"></div>
         <Navbar user={user} />
         <div className="flex-1 pt-28 sm:pt-32 pb-8 z-20">
