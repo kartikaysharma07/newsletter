@@ -110,7 +110,10 @@ const BlogPost = memo(() => {
         queryKey: ['user'],
         queryFn: async () => {
           const { data: { user }, error } = await supabase.auth.getUser();
-          if (error) throw error;
+          if (error) {
+            console.warn('No auth session, proceeding as unauthenticated:', error.message);
+            return null; // Allow unauthenticated access
+          }
           return user;
         },
       },
@@ -129,7 +132,7 @@ const BlogPost = memo(() => {
       <div
         className="min-h-screen bg-neutral-800 font-sans flex items-center justify-center"
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(26, 26, 26, 0.5), rgba(26, 26, 26, 0.7)), url('/bg2.jpg')`,
+          backgroundImage: `url('/bg2.jpg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -147,7 +150,7 @@ const BlogPost = memo(() => {
       <div
         className="min-h-screen bg-neutral-800 font-sans flex items-center justify-center"
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(26, 26, 26, 0.5), rgba(26, 26, 26, 0.7)), url('/bg2.jpg')`,
+          backgroundImage: `url('/bg2.jpg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -165,7 +168,7 @@ const BlogPost = memo(() => {
       <div
         className="min-h-screen bg-neutral-800 font-sans flex flex-col overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(26, 26, 26, 0.5), rgba(26, 26, 26, 0.7)), url('/bg2.jpg')`,
+          backgroundImage: `url('/bg3.jpg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -187,15 +190,29 @@ const BlogPost = memo(() => {
               <img
                 src={blog.image}
                 alt={blog.title}
-                className="w-full max-h-96 object-contain rounded-xl mb-8"
+                className="w-full max-w-7xl object-contain rounded-xl mb-8 mx-auto"
                 loading="lazy"
                 onError={(e) => (e.target.src = 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&auto=format&fit=crop&q=60')}
               />
               <button
                 onClick={() => shareBlog(blog)}
-                className="text-neutral-200 bg-gradient-to-r from-[#FF5722] to-[#FFC107] rounded-xl px-5 py-2 font-sans hover:bg-[#FF5722]/80"
+                className="flex items-center gap-2 text-neutral-200 bg-gradient-to-r from-[#FF5722] to-[#FFC107] rounded-xl px-5 py-2 font-sans hover:bg-[#FF5722]/80"
                 aria-label="Share this blog post"
               >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                  />
+                </svg>
                 Share This Post
               </button>
             </motion.div>

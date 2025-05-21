@@ -52,7 +52,7 @@ const FeaturedBlogs = memo(({ blogs, isLoadingBlogs, blogError }) => {
               key={index}
               className="bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl p-4 animate-pulse"
             >
-              <div className="h-48 bg-neutral-700/50 rounded mb-3"></div>
+              <div className="h-56 bg-neutral-700/50 rounded mb-3"></div>
               <div className="h-5 bg-neutral-700/50 rounded mb-2"></div>
               <div className="h-4 bg-neutral-700/50 rounded"></div>
             </div>
@@ -75,8 +75,8 @@ const FeaturedBlogs = memo(({ blogs, isLoadingBlogs, blogError }) => {
                 transition={{ duration: 0.3 }}
               >
                 <Link to={blog.url} className="block h-full">
-                  <div className="bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[#FF5722]/20 transition-all duration-300 flex flex-col h-[350px]">
-                    <div className="relative h-48 overflow-hidden flex-shrink-0 bg-neutral-900">
+                  <div className="bg-neutral-800/50 backdrop-blur-md border border-neutral-700/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[#FF5722]/20 transition-all duration-300 flex flex-col h-[380px]">
+                    <div className="relative h-56 overflow-hidden flex-shrink-0 bg-neutral-900 aspect-[4/3]">
                       <img
                         src={blog.image}
                         alt={blog.title}

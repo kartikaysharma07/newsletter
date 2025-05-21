@@ -22,7 +22,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="navbar">
+    <nav className="navbar bg-white/5 backdrop-blur-xl border border-white/30 shadow-xl">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo" aria-label="RBTechTalks homepage">
           <svg className="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -57,7 +57,7 @@ const Navbar = () => {
                   onMouseLeave={() => setIsLearnOpen(false)}
                 >
                   <button
-                    className="nav-link dropdown-toggle"
+                    className="nav-link dropdown-toggle hover:bg-gradient-to-r hover:from-[#f12711] hover:to-[#f5af19] hover:text-white transition-colors duration-200"
                     onClick={() => setIsLearnOpen(!isLearnOpen)}
                     aria-label={item.aria}
                     aria-expanded={isLearnOpen}
@@ -66,12 +66,12 @@ const Navbar = () => {
                     <span className="dropdown-caret">▼</span>
                   </button>
                   {isLearnOpen && (
-                    <ul className="dropdown-menu">
+                    <ul className="dropdown-menu bg-white/5 backdrop-blur-xl border border-white/30">
                       {item.dropdown.map((subItem) => (
                         <li key={subItem.to}>
                           <NavLink
                             to={subItem.to}
-                            className="dropdown-item"
+                            className="dropdown-item hover:bg-gradient-to-r hover:from-[#f12711] hover:to-[#f5af19] hover:text-white transition-colors duration-200"
                             aria-label={subItem.aria}
                             onClick={() => {
                               setIsLearnOpen(false);
@@ -88,7 +88,9 @@ const Navbar = () => {
               ) : (
                 <NavLink
                   to={item.to}
-                  className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}
+                  className={({ isActive }) => 
+                    `nav-link ${isActive ? 'nav-link-active' : ''} hover:bg-gradient-to-r hover:from-[#f12711] hover:to-[#f5af19] hover:text-white transition-colors duration-200`
+                  }
                   aria-label={item.aria}
                   onClick={() => {
                     setIsMenuOpen(false);
@@ -118,14 +120,14 @@ const Navbar = () => {
         </button>
       </div>
       {isMenuOpen && (
-        <div className="mobile-menu">
+        <div className="mobile-menu bg-white/5 backdrop-blur-xl border border-white/30">
           <ul className="mobile-nav-links">
             {navItems.map((item) => (
               <li key={item.to || item.label}>
                 {item.isDropdown ? (
                   <div>
                     <button
-                      className="mobile-nav-link mobile-dropdown-toggle"
+                      className="mobile-nav-link mobile-dropdown-toggle hover:bg-gradient-to-r hover:from-[#f12711] hover:to-[#f5af19] hover:text-white transition-colors duration-200"
                       onClick={() => setIsLearnOpen(!isLearnOpen)}
                       aria-label={item.aria}
                       aria-expanded={isLearnOpen}
@@ -134,12 +136,12 @@ const Navbar = () => {
                       <span className="dropdown-caret">▼</span>
                     </button>
                     {isLearnOpen && (
-                      <ul className="mobile-dropdown-menu">
+                      <ul className="mobile-dropdown-menu bg-white/5 backdrop-blur-xl border border-white/30">
                         {item.dropdown.map((subItem) => (
                           <li key={subItem.to}>
                             <NavLink
                               to={subItem.to}
-                              className="mobile-dropdown-item"
+                              className="mobile-dropdown-item hover:bg-gradient-to-r hover:from-[#f12711] hover:to-[#f5af19] hover:text-white transition-colors duration-200"
                               aria-label={subItem.aria}
                               onClick={() => {
                                 setIsMenuOpen(false);
@@ -156,7 +158,9 @@ const Navbar = () => {
                 ) : (
                   <NavLink
                     to={item.to}
-                    className={({ isActive }) => `mobile-nav-link ${isActive ? 'mobile-nav-link-active' : ''}`}
+                    className={({ isActive }) => 
+                      `mobile-nav-link ${isActive ? 'mobile-nav-link-active' : ''} hover:bg-gradient-to-r hover:from-[#f12711] hover:to-[#f5af19] hover:text-white transition-colors duration-200`
+                    }
                     aria-label={item.aria}
                     onClick={() => {
                       setIsMenuOpen(false);
