@@ -4,15 +4,14 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   --color-gradient-start: #f12711;
-  --color-gradient-end: #f5af19;
+  --color-gradient-end: #f57819;
   --color-text-primary: #FFFFFF;
   --color-background-dark: #1A1A1A;
   --color-navbar-bg: #2A2A2A;
   --color-heading-gradient-start: #fceabb;
-  --color-heading-gradient-end: #f8b500;
+  --color-heading-gradient-end: #f89d00;
 }
 
 @layer base {
@@ -21,11 +20,8 @@
     scroll-behavior: smooth;
   }
   body {
-  @apply bg-cover bg-no-repeat bg-fixed bg-center;
-  
-  background-image: url('/bg.jpg'); /* Replace with your image path */
-  }
-  body {
+    @apply bg-cover bg-no-repeat bg-fixed bg-center;
+    background-image: url('/bg.jpg');
     background-color: var(--color-background-dark);
     color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
@@ -54,7 +50,7 @@
     color: transparent;
   }
   .text-primary-80 {
-    color: rgba(255, 255, 255, 0.8); /* Equivalent to --color-text-primary with 80% opacity */
+    color: rgba(255, 255, 255, 0.8);
   }
   .text-heading-gradient {
     background: linear-gradient(to right, var(--color-heading-gradient-start), var(--color-heading-gradient-end));
@@ -67,20 +63,16 @@
 .prose-invert h2 {
   @apply text-heading-gradient font-['Poppins'] font-semibold;
 }
-
 .prose-invert p {
   @apply text-[var(--color-text-primary)] font-['Poppins'] leading-relaxed;
 }
-
 .prose-invert ul,
 .prose-invert ol {
   @apply text-[var(--color-text-primary)] font-['Poppins'] mb-4;
 }
-
 .prose-invert li {
   @apply text-[var(--color-text-primary)] font-['Poppins'];
 }
-
 .prose-invert blockquote {
   border-left-color: var(--color-gradient-start);
   @apply border-l-4 pl-4 italic text-primary-80 font-['Poppins'] my-4;
@@ -91,11 +83,13 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: var(--color-navbar-bg);
   padding: 1rem 1.5rem;
   z-index: 1000;
+  height: 72px;
+  background-color: rgba(42, 42, 42, 0.5); /* Semi-transparent */
+  backdrop-filter: blur(12px); /* Blur effect */
+  -webkit-backdrop-filter: blur(12px); /* Safari support */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  height: 72px; /* Fixed height to prevent expansion */
 }
 
 .navbar-container {
@@ -198,7 +192,7 @@
   left: 0;
   background-color: var(--color-navbar-bg);
   border-radius: 0.75rem;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(241, 39, 17, 0.2); /* Glow effect */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), 0 0 8px rgba(241, 39, 17, 0.2);
   padding: 1rem 0;
   min-width: 240px;
   z-index: 1001;
@@ -207,7 +201,7 @@
   transition: opacity 0.3s ease, transform 0.3s ease;
   border: 1px solid transparent;
   background-image: linear-gradient(var(--color-navbar-bg), var(--color-navbar-bg)),
-                    linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+    linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
   background-origin: border-box;
   background-clip: padding-box, border-box;
 }
@@ -349,4 +343,3 @@
     transform: translateY(0);
   }
 }
-

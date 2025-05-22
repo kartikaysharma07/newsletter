@@ -18,26 +18,17 @@ const Navbar = () => {
         { to: '/learn/ai-ml', label: 'Learn AI/ML', aria: 'Learn about AI and Machine Learning' },
       ],
     },
-    { to: '/website', label: 'Visit Our Website', aria: 'Visit our website' },
+    { to: '/website', label: 'Contact', aria: 'Get in touch with us' }, // 🔁 Updated label
   ];
 
   return (
-    <nav className="navbar bg-white/5 backdrop-blur-xl border border-white/30 shadow-xl">
+    <nav className="navbar bg-white/5 backdrop-blur-2xl border border-white/30 shadow-xl">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo" aria-label="RBTechTalks homepage">
           <svg className="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M12 2L2 7L12 12L22 7L12 2Z"
-              fill="url(#grad)"
-            />
-            <path
-              d="M2 17L12 22L22 17"
-              fill="url(#grad)"
-            />
-            <path
-              d="M2 12L12 17L22 12"
-              fill="url(#grad)"
-            />
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="url(#grad)" />
+            <path d="M2 17L12 22L22 17" fill="url(#grad)" />
+            <path d="M2 12L12 17L22 12" fill="url(#grad)" />
             <defs>
               <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" style={{ stopColor: '#f12711', stopOpacity: 1 }} />
@@ -66,7 +57,7 @@ const Navbar = () => {
                     <span className="dropdown-caret">▼</span>
                   </button>
                   {isLearnOpen && (
-                    <ul className="dropdown-menu bg-white/5 backdrop-blur-xl border border-white/30">
+                    <ul className="dropdown-menu bg-white/5 backdrop-blur-2xl border border-white/30">
                       {item.dropdown.map((subItem) => (
                         <li key={subItem.to}>
                           <NavLink
@@ -88,7 +79,7 @@ const Navbar = () => {
               ) : (
                 <NavLink
                   to={item.to}
-                  className={({ isActive }) => 
+                  className={({ isActive }) =>
                     `nav-link ${isActive ? 'nav-link-active' : ''} hover:bg-gradient-to-r hover:from-[#f12711] hover:to-[#f5af19] hover:text-white transition-colors duration-200`
                   }
                   aria-label={item.aria}
@@ -120,7 +111,7 @@ const Navbar = () => {
         </button>
       </div>
       {isMenuOpen && (
-        <div className="mobile-menu bg-white/5 backdrop-blur-xl border border-white/30">
+        <div className="mobile-menu bg-white/5 backdrop-blur-2xl border border-white/30">
           <ul className="mobile-nav-links">
             {navItems.map((item) => (
               <li key={item.to || item.label}>
@@ -136,7 +127,7 @@ const Navbar = () => {
                       <span className="dropdown-caret">▼</span>
                     </button>
                     {isLearnOpen && (
-                      <ul className="mobile-dropdown-menu bg-white/5 backdrop-blur-xl border border-white/30">
+                      <ul className="mobile-dropdown-menu bg-white/5 backdrop-blur-2xl border border-white/30">
                         {item.dropdown.map((subItem) => (
                           <li key={subItem.to}>
                             <NavLink
@@ -158,7 +149,7 @@ const Navbar = () => {
                 ) : (
                   <NavLink
                     to={item.to}
-                    className={({ isActive }) => 
+                    className={({ isActive }) =>
                       `mobile-nav-link ${isActive ? 'mobile-nav-link-active' : ''} hover:bg-gradient-to-r hover:from-[#f12711] hover:to-[#f5af19] hover:text-white transition-colors duration-200`
                     }
                     aria-label={item.aria}
