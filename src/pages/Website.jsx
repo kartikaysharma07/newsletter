@@ -98,7 +98,7 @@ const Website = memo(() => {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-4xl sm:text-5xl font-serif font-bold text-heading-gradient"
               >
-                Visit Our Website
+                Contact Us
               </motion.h1>
             </div>
             <motion.p
